@@ -18,7 +18,7 @@ class Tour:
             random.shuffle(self.joueurs)
 
         # Tri des joueurs par nombre de points dans le tournoi
-        self.joueurs.sort(key=lambda x: x.total_point, reverse=True)
+        self.joueurs.sort(key=lambda x: x.score, reverse=True)
 
         # Association des joueurs dans l'ordre sans matchs identiques
         jouee = set()

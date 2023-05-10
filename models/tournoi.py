@@ -17,4 +17,10 @@ class Tournoi:
 
     def afficher_joueurs(self):
         for joueur in self.liste_joueurs:
-            print(joueur.nom, joueur.prenom)
+            print(joueur.afficher_info())
+
+    def classement(self):
+        classement_joueur = sorted(self.liste_joueurs, key=lambda j: j.score, reverse=True)
+        print("Classement :")
+        for i, joueur in enumerate(classement_joueur, start=1):
+            print(f"{i}. {joueur.nom} {joueur.prenom} ({joueur.score})")

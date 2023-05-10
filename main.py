@@ -30,7 +30,14 @@ tour.generate_matches()
 
 # Afficher les matchs générés pour le tour
 for match in tour.liste_matchs:
-    print(f"{match.joueur1.nom} {match.joueur1.prenom} vs. {match.joueur2.nom} {match.joueur2.prenom}")
+    print(f"{match.joueur1.nom} {match.joueur1.prenom} vs. \
+            {match.joueur2.nom} {match.joueur2.prenom}")
 
+# Rentrer les resultats des matchs du premier tour
 tour.liste_matchs[0].resultat_match(tour.liste_matchs[0], 1, 0)
+tour.liste_matchs[0].resultat()
+
 tour.liste_matchs[1].resultat_match(tour.liste_matchs[1], 0.5, 0.5)
+tour.liste_matchs[1].resultat()
+
+tournoi1.classement()
