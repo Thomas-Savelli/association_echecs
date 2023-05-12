@@ -13,6 +13,7 @@ class Tour:
         self.joueurs = joueurs
 
     def generate_matches(self):
+        # Cette méthode permet de générer les matchs du tour initialisé
         # Mélange des joueurs de façon aléatoire
         if self.nom == "Tour 1" or self.nom == "tour 1":
             random.shuffle(self.joueurs)

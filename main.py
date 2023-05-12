@@ -2,42 +2,105 @@ from datetime import date
 from models.joueur import Joueur
 from models.tournoi import Tournoi
 from models.tour import Tour
-from models.match import Match
 
-# création d'instance de joueur
+# Création d'une liste contenant tout les joueurs initialisés
+liste_joueurs = []
+# création d'instance de Joueur
 joueur1 = Joueur("Savelli", "Thomas", date(1992, 7, 16))
 joueur2 = Joueur("Savelli", "Marc-André", date(1996, 5, 26))
 joueur3 = Joueur("Cantet", "Agathe", date(1992, 4, 22))
 joueur4 = Joueur("Cantet", "Antoine", date(1992, 4, 22))
+joueur5 = Joueur("Buisson", "Antohny", date(1972, 2, 11))
+joueur6 = Joueur("Rannou", "Juliette", date(1982, 9, 2))
 
+liste_joueurs = [joueur1, joueur2, joueur3, joueur4, joueur5, joueur6]
 
+# Création d'une liste contenant tout les tounois
+liste_tournois = []
 # Création tournoi
-tournoi1 = Tournoi("Echequier dorée", "L'Île-Rousse", date(2022, 5, 9),
-                   date(2022, 5, 9), "4 tours", "Tournois Espoir Haute-Corse")
+tournoi1 = Tournoi("Echéquier Dorée", "Salle des fêtes de L'Île-Rousse", date(2023, 5, 11),
+                   date(2023, 5, 14), 4, "Tournoi d'inauguration de l'association d'échecs")
+liste_tournois.append(tournoi1)
 
-# Ajout des joueurs au Tournoi Echequier dorée
+# Inscription des joueurs au tournoi_1
 tournoi1.ajouter_joueur(joueur1)
 tournoi1.ajouter_joueur(joueur2)
 tournoi1.ajouter_joueur(joueur3)
 tournoi1.ajouter_joueur(joueur4)
+tournoi1.ajouter_joueur(joueur5)
+tournoi1.ajouter_joueur(joueur6)
 
-# Création d'un Tour pour le tournoi
-tour = Tour("Round 1", date(2022, 6, 1), date(2022, 6, 3),
-            tournoi1.liste_joueurs)
+# Afficher tout les joueurs initialisés
+for joueur in Joueur.afficher_joueurs_initialises():
+    joueur.afficher_info()
 
-# Générer les paires de matchs pour le tour
-tour.generate_matches()
+# Création du premier tour
+tour1 = Tour("tour 1", date(2023, 5, 11), date(2023, 5, 11),
+             tournoi1.liste_joueurs)
 
-# Afficher les matchs générés pour le tour
-for match in tour.liste_matchs:
-    print(f"{match.joueur1.nom} {match.joueur1.prenom} vs. \
-            {match.joueur2.nom} {match.joueur2.prenom}")
+# Création des matchs du premier tour
+Tour.generate_matches(tour1)
 
-# Rentrer les resultats des matchs du premier tour
-tour.liste_matchs[0].resultat_match(tour.liste_matchs[0], 1, 0)
-tour.liste_matchs[0].resultat()
 
-tour.liste_matchs[1].resultat_match(tour.liste_matchs[1], 0.5, 0.5)
-tour.liste_matchs[1].resultat()
+# Renseigner les résultats des matchs du premier tour
+tour1.liste_matchs[0].resultat_match(tour1.liste_matchs[0], 0, 1)
+tour1.liste_matchs[0].resultat()
 
+tour1.liste_matchs[1].resultat_match(tour1.liste_matchs[1], 1, 0)
+tour1.liste_matchs[1].resultat()
+
+tour1.liste_matchs[2].resultat_match(tour1.liste_matchs[2], 1, 0)
+tour1.liste_matchs[2].resultat()
+
+print("-------1 ER TOUR DU TOURNOI--------")
+print("")
+Tournoi.afficher_tournois(liste_tournois)
+print("")
+print("------------------------------------")
+print("")
+# Afficher les Matchs du premier tour
+for match in tour1.liste_matchs:
+    print(f"{match.joueur1.nom} {match.joueur1.prenom} - {match.joueur1.score} vs \
+            {match.joueur2.nom} {match.joueur2.prenom} - {match.joueur1.score}")
+print("")
+print("------------------------------------")
+print("")
 tournoi1.classement()
+print("")
+print("------------------------------------")
+print("")
+
+# Création du second tour
+tour2 = Tour("tour 2", date(2023, 5, 12), date(2023, 5, 12),
+             tournoi1.liste_joueurs)
+
+# Création des matchs du premier tour
+Tour.generate_matches(tour2)
+
+
+# Renseigner les résultats des matchs du premier tour
+tour2.liste_matchs[0].resultat_match(tour2.liste_matchs[0], 1, 0)
+tour2.liste_matchs[0].resultat()
+
+tour2.liste_matchs[1].resultat_match(tour2.liste_matchs[1], 0, 1)
+tour2.liste_matchs[1].resultat()
+
+tour2.liste_matchs[2].resultat_match(tour2.liste_matchs[2], 0, 1)
+tour2.liste_matchs[2].resultat()
+
+print("-------2 EME TOUR DU TOURNOI--------")
+print("")
+Tournoi.afficher_tournois(liste_tournois)
+print("")
+print("------------------------------------")
+print("")
+# Afficher les Matchs du premier tour
+for match in tour1.liste_matchs:
+    print(f"{match.joueur1.nom} {match.joueur1.prenom} - {match.joueur1.score} vs \
+          {match.joueur2.nom} {match.joueur2.prenom} - {match.joueur1.score}")
+print("")
+print("------------------------------------")
+print("")
+tournoi1.classement()
+print("")
+print("------------------------------------")
