@@ -1,20 +1,25 @@
 class Joueur:
-    # Liste enregistrant tout les joueurs initialisés
-    liste_joueurs_initilises = []
     """La classe "Joueur" permet de stocker les informations des joueurs"""
-    def __init__(self, nom, prenom, date_naissance):
+    def __init__(self, id, nom, prenom, date_naissance):
+        self.id = id
         self.nom = nom
         self.prenom = prenom
         self.date_naissance = date_naissance
         self.score = 0
-        Joueur.liste_joueurs_initilises.append(self)
 
-    def afficher_info(self):
-        # Affiche les infos d'un joueur
-        print(f"{self.prenom} {self.nom} - {self.date_naissance} - score : {self.score}")
+    def __repr__(self):
+        return f"{self.id} {self.nom} {self.prenom} / {self.date_naissance} - score: {self.score}"
 
-    @classmethod
-    # Permet de prendre la classe en tant que premier argument plutôt que l'instance de la classe.
-    def afficher_joueurs_initialises(cls):
-        # Permet de retourner l'ensemble des joueurs initialisés
-        return cls.liste_joueurs_initilises
+    def gagne(self):
+        self.score += 1
+
+    def egalise(self):
+        self.score += 0.5
+
+    def perd(self):
+        pass
+
+
+if __name__ == '__main__':
+    joueur = Joueur("qlizdj", "jean", "toto", "10/12/3434")
+    print(joueur)

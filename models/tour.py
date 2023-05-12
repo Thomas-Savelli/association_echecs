@@ -10,7 +10,6 @@ class Tour:
         self.date_debut = date_debut
         self.date_fin = date_fin
         self.liste_matchs = []
-        self.joueurs = joueurs
 
     def generate_matches(self):
         # Cette méthode permet de générer les matchs du tour initialisé

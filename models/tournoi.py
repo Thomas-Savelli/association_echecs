@@ -7,7 +7,6 @@ class Tournoi:
         self.date_debut = date_debut
         self.date_fin = date_fin
         self.nombre_tours = nombre_tours
-        self.numero_tour_actuel = 1
         self.liste_tours = []
         self.liste_joueurs = []
         self.description = description
@@ -17,9 +16,10 @@ class Tournoi:
         self.liste_joueurs.append(joueur)
 
     def afficher_joueurs(self):
+        # Permet d'afficher les joueurs du tournoi par ordre alphabétique
         joueurs_tri = sorted(self.liste_joueurs, key=lambda joueur: joueur.nom)
         for joueur in joueurs_tri:
-            print(joueur.afficher_info())
+            print(joueur)
 
     def classement(self):
         # Permet d'afficher le classement des joueurs dans le tournoi
@@ -29,10 +29,11 @@ class Tournoi:
         for i, joueur in enumerate(classement_joueur, start=1):
             print(f"{i}. {joueur.nom} {joueur.prenom} ({joueur.score})")
 
-    def afficher_tournois(liste_tournois):
-        # Affiche la liste de tous les tournois ainsi que leurs informations
-        for tournoi in liste_tournois:
-            print(f"Nom : {tournoi.nom}\nLieu : {tournoi.lieu}\
-                  \nDate : {tournoi.date_debut} - {tournoi.date_fin}\
-                  \nNombre de tours : {tournoi.nombre_tours}\
-                  \nDescription : {tournoi.description}\n")
+    def __repr__(self):
+        return f"Nom : {self.nom}\nLieu : {self.lieu}\
+                \nDate : {self.date_debut} - {self.date_fin}\
+                \nNombre de tours : {self.nombre_tours}\
+                \nDescription : {self.description}\n"
+
+    def generer_tour(self)
+        """generer un tour avec une liste de matchs et l'ajouter à la liste des tours"""

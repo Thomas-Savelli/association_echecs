@@ -6,12 +6,16 @@ from models.tour import Tour
 # Création d'une liste contenant tout les joueurs initialisés
 liste_joueurs = []
 # création d'instance de Joueur
-joueur1 = Joueur("Savelli", "Thomas", date(1992, 7, 16))
-joueur2 = Joueur("Savelli", "Marc-André", date(1996, 5, 26))
-joueur3 = Joueur("Cantet", "Agathe", date(1992, 4, 22))
-joueur4 = Joueur("Cantet", "Antoine", date(1992, 4, 22))
-joueur5 = Joueur("Buisson", "Antohny", date(1972, 2, 11))
-joueur6 = Joueur("Rannou", "Juliette", date(1982, 9, 2))
+joueur1 = Joueur("Savelli", "Thomas", date(1992, 7, 16), "joueur1")
+joueur2 = Joueur("Savelli", "Marc-André", date(1996, 5, 26), "joueur2")
+joueur3 = Joueur("Cantet", "Agathe", date(1992, 4, 22), "joueur3")
+joueur4 = Joueur("Cantet", "Antoine", date(1992, 4, 22), "joueur4")
+joueur5 = Joueur("Buisson", "Antohny", date(1972, 2, 11), "joueur5")
+joueur6 = Joueur("Rannou", "Juliette", date(1982, 9, 2), "joueur6")
+joueur7 = Joueur("Monkey.D", "Luffy", date(1870, 2, 2), "joueur7")
+joueur8 = Joueur("Kurusaki", "Ichigo", date(870, 1, 1), "joueur8")
+joueur9 = Joueur("Uzumaki", "Naruto", date(1458, 9, 30), "joueur9")
+joueur10 = Joueur("Dumbeldore", "Albus", date(1820, 6, 12), "joueur10")
 
 liste_joueurs = [joueur1, joueur2, joueur3, joueur4, joueur5, joueur6]
 
@@ -52,12 +56,14 @@ tour1.liste_matchs[1].resultat()
 tour1.liste_matchs[2].resultat_match(tour1.liste_matchs[2], 1, 0)
 tour1.liste_matchs[2].resultat()
 
+print("")
 print("-------1 ER TOUR DU TOURNOI--------")
 print("")
 Tournoi.afficher_tournois(liste_tournois)
 print("")
 print("------------------------------------")
 print("")
+
 # Afficher les Matchs du premier tour
 for match in tour1.liste_matchs:
     print(f"{match.joueur1.nom} {match.joueur1.prenom} - {match.joueur1.score} vs \
