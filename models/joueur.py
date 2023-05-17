@@ -8,7 +8,7 @@ class Joueur:
         self.score = 0
 
     def __repr__(self):
-        return f"{self.id} {self.nom} {self.prenom} / {self.date_naissance} - score: {self.score}"
+        return f"{self.id} {self.nom} {self.prenom} - {self.date_naissance} - score: {self.score}"
 
     def gagne(self):
         self.score += 1
