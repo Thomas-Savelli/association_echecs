@@ -42,7 +42,7 @@ class Tournoi:
                 \nNombre de tours : {self.nombre_tours}\
                 \nDescription : {self.description}\n"
 
-    def generer_tour(self):
+    def generer_match(self):
         """generer un tour avec une liste de matchs et l'ajouter à la liste des tours"""
         # Cette méthode permet de générer les matchs du tour initialisé
         # Mélange des joueurs de façon aléatoire
@@ -50,20 +50,20 @@ class Tournoi:
             random.shuffle(self.liste_joueurs)
 
         # Tri des joueurs par nombre de points dans le tournoi
-        self.joueurs.sort(key=lambda x: x.score, reverse=True)
+        self.liste_joueurs.sort(key=lambda x: x.score, reverse=True)
 
         # Association des joueurs dans l'ordre sans matchs identiques
         jouee = set()
 
         # Sur l'intégralité des joueurs, selection de deux à la fois
-        for i in range(0, len(self.joueurs), 2):
+        for i in range(0, len(self.liste_joueurs), 2):
             """ Pour for qui va de 0 à la longueur de la liste self.joueurs en
             incrémentant de 2 à chaque fois (pour prendre deux joueurs à la
             fois). À chaque itération, on prend les deux joueurs joueur1
             et joueur2 à partir de leur index i et i+1 dans la liste
             self.joueurs."""
-            joueur1 = self.joueurs[i]
-            joueur2 = self.joueurs[i+1]
+            joueur1 = self.liste_joueurs[i]
+            joueur2 = self.liste_joueurs[i+1]
             while (joueur1, joueur2) in jouee or (joueur2, joueur1) in jouee:
                 """Dans la boucle while, on vérifie si la paire de joueurs
                 (joueur1, joueur2) ou (joueur2, joueur1) a déjà été jouée
@@ -71,8 +71,8 @@ class Tournoi:
                 (i est incrémenté de 2) jusqu'à ce qu'on trouve une paire
                 de joueurs qui n'a pas encore été jouée."""
                 i += 2
-                joueur1 = self.joueurs[i]
-                joueur2 = self.joueurs[i+1]
+                joueur1 = self.liste_joueurs[i]
+                joueur2 = self.liste_joueurs[i+1]
 
             """Une fois que la paire de joueurs est trouvée,
             on l'ajoute à jouee pour éviter de la réutiliser

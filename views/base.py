@@ -4,7 +4,7 @@ class View:
         print("")
         print("Menu Principal")
         print("")
-        print("1 - Démarrer un tournoi")
+        print("1 - Créer un nouveau tournoi")
         print("2 - Informations sur le tournoi")
         print("")
         return input()
@@ -35,9 +35,10 @@ class View:
         return id, nom, prenom, date_naissance
 
     @classmethod
-    def afficher_informations_tournoi(cls, tournoi, joueurs, tours) -> str:
+    def afficher_informations_tournoi(cls, tournoi, joueurs, match) -> str:
         print("")
         print("------------------------------")
+        print("")
         print("Informations sur le tournoi :")
         print(tournoi)
         print("------------------------------")
@@ -49,19 +50,15 @@ class View:
             print("")
         print("------------------------------")
         print("")
-        for tour in tours:
+        for tour in tournoi.liste_tours:
             print(f"{tour.nom} - {tour.date_debut} : {tour.date_fin}")
-
-    @classmethod
-    def afficher_informations_joueurs(cls, joueurs) -> str:
-        print("Informations sur les joueurs : ")
-        print("------------------------------")
-        for joueur in joueurs:
-            print(f"Id: {joueur.id}")
-            print(f"Nom: {joueur.nom}")
-            print(f"Prénom: {joueur.prenom}")
-            print(f"Date de naissance: {joueur.date_naissance}")
-            print(f"Score: {joueur.score}")
+            print("")
+            print(f"Matchs du {tour.nom} : ")
+            print("")
+            for match in tournoi.liste_matchs:
+                print(f"{match.joueur1.nom} {match.joueur1.prenom} VS {match.joueur2.nom} {match.joueur2.prenom} :\
+                      {match.score1} - {match.score2}")
+                print("")
             print("------------------------------")
 
     @classmethod

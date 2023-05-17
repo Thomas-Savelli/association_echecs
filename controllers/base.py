@@ -21,10 +21,10 @@ class Controller:
                     if choix_2 == "o":
                         self.creer_joueur()
                     else:
-                        # print("Merci, vos données ont été enregistrées ! ")
                         break
 
                 self.creer_tour()
+                self.creer_matchs()
 
             elif choix == "2":
                 self.view.afficher_informations_tournoi(self.tournoi, self.tournoi.liste_joueurs,
@@ -49,9 +49,6 @@ class Controller:
 
     def creer_tour(self):
         """creer les tours du tournoi"""
-        if self.tournoi is None:
-            print("Aucun tournoi n'a été créé ...")
-            return
         if self.tournoi.liste_joueurs is None:
             print("Aucun joueur n'a été créé ...")
 
@@ -65,3 +62,6 @@ class Controller:
             infos_tour = self.view.nouveau_tour()
             tour_index = Tour(*infos_tour)
             self.tournoi.liste_tours.append(tour_index)
+
+    def creer_matchs(self):
+        self.tournoi.generer_match()
