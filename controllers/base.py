@@ -1,6 +1,9 @@
 from models.tournoi import Tournoi
 from models.joueur import Joueur
 from models.tour import Tour
+from models.match import Match
+import json
+import os
 
 
 class Controller:
@@ -25,10 +28,18 @@ class Controller:
 
                 self.creer_tour()
                 self.creer_matchs()
-
+                nom_fichier = self.tournoi.nom.replace(" ", "_") + ".json"
+                self.sauvegarder_tournoi(self.tournoi, nom_fichier)
             elif choix == "2":
-                self.view.afficher_informations_tournoi(self.tournoi, self.tournoi.liste_joueurs,
-                                                        self.tournoi.liste_tours)
+                liste_fichiers = self.liste_fichiers_tournois()
+                self.view.afficher_liste_fichiers(liste_fichiers)
+                nom_fichier = self.view.demander_nom_fichier()
+                if nom_fichier:
+                    chemin_fichier = self.chemin_fichier_tournoi(nom_fichier)
+                    tournoi = self.charger_tournoi(chemin_fichier)
+                    if tournoi is not None:
+                        self.view.afficher_informations_tournoi(tournoi, tournoi.liste_joueurs,
+                                                                tournoi.liste_tours)
 
             else:
                 print("aurevoir !")
@@ -65,3 +76,89 @@ class Controller:
 
     def creer_matchs(self):
         self.tournoi.generer_match()
+
+    def sauvegarder_tournoi(self, tournoi, nom_fichier):
+        # Converti les objects en dictionnaires
+        joueurs_data = [joueur.to_dict() for joueur in tournoi.liste_joueurs]
+        tours_data = [tour.to_dict() for tour in tournoi.liste_tours]
+        matchs_data = [match.to_dict() for match in tournoi.liste_matchs]
+
+        # Crée le dictionnaire des données du tournoi
+        tournoi_data = {
+            "nom": tournoi.nom,
+            "lieu": tournoi.lieu,
+            "date_debut": tournoi.date_debut,
+            "date_fin": tournoi.date_fin,
+            "nombre_tours": tournoi.nombre_tours,
+            "description": tournoi.description,
+            "joueurs": joueurs_data,
+            "tours": tours_data,
+            "matchs": matchs_data,
+        }
+
+        # Crée le dossier pour les tournois s'il n'existe pas
+        dossier_tournoi = "data_tournois"
+        if not os.path.exists(dossier_tournoi):
+            os.mkdir(dossier_tournoi)
+
+        # Crée le chemin complet du fichier
+        chemin_fichier = os.path.join(dossier_tournoi, nom_fichier)
+
+        # Ecrit les données du tournoi dans le fichier JSON
+        with open(chemin_fichier, "w") as fichier:
+            json.dump(tournoi_data, fichier, indent=4)
+
+    def charger_tournoi(self, mon_fichier):
+        chemin_fichier = os.path.join(mon_fichier)
+        print("chemin du fichier : ", chemin_fichier)
+        if not os.path.exists(chemin_fichier):
+            print("Le fichier spécifié n'existe pas.")
+            return None
+
+        with open(chemin_fichier, "r") as fichier:
+            tournoi_data = json.load(fichier)
+
+        # Création des objets Joueur à partir des données fichier
+        joueurs = []
+        joueurs_data = tournoi_data.get("joueurs", [])
+        for joueur_data in joueurs_data:
+            joueur = Joueur(**joueur_data)
+            joueurs.append(joueur)
+
+        # Création des objets Tour à partir des données fichier
+        tours = []
+        tours_data = tournoi_data.get("tours", [])
+        for tour_data in tours_data:
+            tour = Tour(**tour_data)
+            tours.append(tour)
+
+        # Création des objets Match à partir des données fichier
+        matchs = []
+        matchs_data = tournoi_data.get("matchs", [])
+        for match_data in matchs_data:
+            joueur1_data = match_data.get("joueur1", {})
+            joueur1 = Joueur(**joueur1_data)
+            joueur2_data = match_data.get("joueur2", {})
+            joueur2 = Joueur(**joueur2_data)
+            score1 = match_data.get("score1", 0)
+            score2 = match_data.get("score2", 0)
+            match = Match(joueur1, joueur2, score1, score2)
+            matchs.append(match)
+
+        # Création d'un objet Tournoi à partir des données chargées
+        tournoi = Tournoi()
+        tournoi.liste_joueurs = joueurs
+        tournoi.liste_tours = tours
+        tournoi.liste_matchs = matchs
+
+        return tournoi
+
+    def liste_fichiers_tournois(self):
+        fichiers = []
+        for nom_fichier in os.listdir("data_tournois"):
+            if nom_fichier.endswith(".json"):
+                fichiers.append(nom_fichier)
+        return fichiers
+
+    def chemin_fichier_tournoi(self, nom_fichier):
+        return os.path.join("data_tournois", nom_fichier)

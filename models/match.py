@@ -7,6 +7,17 @@ class Match:
         self.score1 = score1
         self.score2 = score2
 
+    def to_dict(self):
+        """permet de convertir les données en dictionnaire
+        car JSON ne peut pas représenter directement les objets
+        personnalisés"""
+        return {
+            "joueur1": self.joueur1.to_dict(),
+            "joueur2": self.joueur2.to_dict(),
+            "score1": self.score1,
+            "score2": self.score2
+        }
+
     def resultat(self):
         # Permet de mettre à jour le score des joueurs
         if self.score1 > self.score2:

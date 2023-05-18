@@ -87,6 +87,22 @@ class Tournoi:
         # Retourne la liste des matchs
         return self.liste_matchs
 
+    def to_dict(self):
+        """permet de convertir les données en dictionnaire
+        car JSON ne peut pas représenter directement les objets
+        personnalisés"""
+        return {
+            "nom": self.nom,
+            "lieu": self.lieu,
+            "date_debut": self.date_debut,
+            "date_fin": self.date_fin,
+            "nombre_tour": self.nombre_tours,
+            "liste_tours": [tour.to_dict() for tour in self.liste_tours],
+            "liste_joueurs": [joueur.to_dict() for joueur in self.liste_joueurs],
+            "liste_matchs": [match.to_dict() for match in self.liste_matchs],
+            "description":  self.description
+        }
+
 
 if __name__ == '__main__':
     tournoi1 = Tournoi("Tournoi N1", "L'Ile-Rousse", "12/12/2023", "20/12/2023", "4",

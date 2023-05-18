@@ -1,3 +1,6 @@
+import os
+
+
 class View:
     @classmethod
     def menu_principal(cls) -> str:
@@ -5,7 +8,7 @@ class View:
         print("Menu Principal")
         print("")
         print("1 - Créer un nouveau tournoi")
-        print("2 - Informations sur le tournoi")
+        print("2 - Charger un tournoi")
         print("")
         return input()
 
@@ -67,3 +70,25 @@ class View:
         date_debut = input("Date de début du tour : ")
         date_fin = input("Date de fin du tour : ")
         return nom, date_debut, date_fin
+
+    @classmethod
+    def afficher_liste_fichiers(cls, liste_fichiers):
+        if len(liste_fichiers) == 0:
+            print("Aucun tournoi n'est enregistré")
+        else:
+            print("Voici les tournois disponibles :")
+            for i, fichier in enumerate(liste_fichiers):
+                print(f"{i+1}. {fichier}")
+
+    @classmethod
+    def demander_nom_fichier(cls) -> str:
+        liste_fichiers = os.listdir("data_tournois")
+
+        # Demande à l'utilisateur de selctionner un fichier
+        choix = input("Veuillez choisir un tournoi en entrant son numéro : ")
+        if choix.isdigit() and int(choix) in range(1, len(liste_fichiers) + 1):
+            nom_fichier = liste_fichiers[int(choix) - 1]
+            return nom_fichier
+        else:
+            print("Choix invalide.")
+            return None

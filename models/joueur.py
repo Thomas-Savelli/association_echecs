@@ -19,6 +19,18 @@ class Joueur:
     def perd(self):
         pass
 
+    def to_dict(self):
+        """permet de convertir les données en dictionnaire
+        car JSON ne peut pas représenter directement les objets
+        personnalisés"""
+        return {
+            "id": self.id,
+            "nom": self.nom,
+            "prenom": self.prenom,
+            "date_naissance": self.date_naissance,
+            "score": self.score
+        }
+
 
 if __name__ == '__main__':
     joueur = Joueur("qlizdj", "jean", "toto", "10/12/3434")
