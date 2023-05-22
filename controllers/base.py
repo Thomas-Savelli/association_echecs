@@ -2,6 +2,7 @@ from models.tournoi import Tournoi
 from models.joueur import Joueur
 from models.tour import Tour
 from models.match import Match
+from views.esthetiqueview import Esthetique
 import json
 import os
 
@@ -14,6 +15,7 @@ class Controller:
 
     def start(self):
         while True:
+            Esthetique.afficher_banniere()
             choix = self.view.menu_principal()
 
             if choix == "1":
@@ -31,6 +33,11 @@ class Controller:
                 nom_fichier = self.tournoi.nom.replace(" ", "_") + ".json"
                 self.sauvegarder_tournoi(self.tournoi, nom_fichier)
             elif choix == "2":
+                dossier_tournois = "data_tournois"
+                if not os.path.exists(dossier_tournois) or not os.listdir(dossier_tournois):
+                    print("Le dossier de sauvegarde des tournois n'existe pas ou est vide.")
+                    continue  # Retourne au début de la boucle while
+
                 liste_fichiers = self.liste_fichiers_tournois()
                 self.view.afficher_liste_fichiers(liste_fichiers)
                 nom_fichier = self.view.demander_nom_fichier()
@@ -38,25 +45,53 @@ class Controller:
                     chemin_fichier = self.chemin_fichier_tournoi(nom_fichier)
                     tournoi = self.charger_tournoi(chemin_fichier)
                     if tournoi is not None:
-                        self.view.afficher_informations_tournoi(tournoi, tournoi.liste_joueurs,
-                                                                tournoi.liste_tours)
-
-            else:
-                print("aurevoir !")
+                        self.view.afficher_informations_tournoi(tournoi)
+            elif choix == "3":
+                print("Au revoir !")
                 break
+            else:
+                None
 
     def creer_tournoi(self):
         """creer un tournoi et le stocker dans self.tournoi"""
-        infos_tournoi = self.view.nouveau_tournoi()
+        while True:
+            infos_tournoi = self.view.nouveau_tournoi()
+            if all(infos_tournoi):
+                break
+            else:
+                print("")
+                print("Erreur de Saisie :")
+                print("Veuillez entrée toutes les informations.")
+
         tournoi = Tournoi(*infos_tournoi)
         self.tournoi = tournoi
 
     def creer_joueur(self):
-        """Creer joueur pour le tournoi et le stocker dans self.joueur
-        puis ajout du joueur à la liste des joueurs"""
-        infos_joueur = self.view.nouveau_joueur()
-        joueur = Joueur(*infos_joueur)
-        self.tournoi.ajouter_joueur(joueur)
+        """Creer une paire de joueurs pour le tournoi et les stockent dans self.joueur
+        puis ajout des joueurs à la liste des joueurs"""
+        while True:
+            infos_joueur1 = self.view.nouveau_joueur()
+            if all(infos_joueur1):
+                joueur1 = Joueur(*infos_joueur1)
+                self.tournoi.ajouter_joueur(joueur1)
+            else:
+                print("")
+                print("Erreur de Saisie :")
+                print("Veuillez entrer toutes les informations.")
+                continue
+
+            infos_joueur2 = self.view.nouveau_joueur()
+            if all(infos_joueur2):
+                joueur2 = Joueur(*infos_joueur2)
+                self.tournoi.ajouter_joueur(joueur2)
+            else:
+                print("Veuillez entrer toutes les informations.")
+                continue
+
+            if len(self.tournoi.liste_joueurs) % 2 == 0:
+                break
+            else:
+                print("Le nombre de joueurs doit être pair. Veuillez saisir les joueurs deux par deux.")
 
     def creer_tour(self):
         """creer les tours du tournoi"""
@@ -70,7 +105,14 @@ class Controller:
         for tour_index in range(1, nombre_tours + 1):
             print(f"Création du tour {tour_index}")
 
-            infos_tour = self.view.nouveau_tour()
+            while True:
+                infos_tour = self.view.nouveau_tour()
+                if all(infos_tour):
+                    break
+                else:
+                    print("")
+                    print("Erreur de Saisie :")
+                    print("Veuillez entrer toutes les informations.")
             tour_index = Tour(*infos_tour)
             self.tournoi.liste_tours.append(tour_index)
 
@@ -117,6 +159,14 @@ class Controller:
 
         with open(chemin_fichier, "r") as fichier:
             tournoi_data = json.load(fichier)
+        # Charger les attributs du tournoi à partir du fichier JSON
+            nom = tournoi_data.get("nom")
+            lieu = tournoi_data.get("lieu")
+            date_debut = tournoi_data.get("date_debut")
+            date_fin = tournoi_data.get("date_fin")
+
+        # Créer un objet Tournoi avec les attributs chargés
+        tournoi = Tournoi(nom=nom, lieu=lieu, date_debut=date_debut, date_fin=date_fin)
 
         # Création des objets Joueur à partir des données fichier
         joueurs = []
@@ -146,7 +196,6 @@ class Controller:
             matchs.append(match)
 
         # Création d'un objet Tournoi à partir des données chargées
-        tournoi = Tournoi()
         tournoi.liste_joueurs = joueurs
         tournoi.liste_tours = tours
         tournoi.liste_matchs = matchs
