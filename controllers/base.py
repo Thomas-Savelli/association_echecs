@@ -31,6 +31,7 @@ class Controller:
                 self.creer_tour()
                 nom_fichier = self.tournoi.nom.replace(" ", "_") + ".json"
                 self.sauvegarder_tournoi(self.tournoi, nom_fichier)
+                os.system("cls")
             elif choix == "2":
                 dossier_tournois = "data_tournois"
                 if not os.path.exists(dossier_tournois) or not os.listdir(dossier_tournois):
