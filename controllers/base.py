@@ -29,7 +29,6 @@ class Controller:
                         break
 
                 self.creer_tour()
-                self.creer_matchs()
                 nom_fichier = self.tournoi.nom.replace(" ", "_") + ".json"
                 self.sauvegarder_tournoi(self.tournoi, nom_fichier)
             elif choix == "2":
@@ -44,9 +43,49 @@ class Controller:
                 if nom_fichier:
                     chemin_fichier = self.chemin_fichier_tournoi(nom_fichier)
                     tournoi = self.charger_tournoi(chemin_fichier)
-                    if tournoi is not None:
-                        self.view.afficher_informations_tournoi(tournoi)
-            elif choix == "3":
+                    while True:
+                        os.system("cls")
+                        Esthetique.afficher_banniere()
+                        choix = self.view.menu_gestion_tournoi(tournoi.nom)
+                        if choix == "1":
+                            choix = self.view.afficher_informations_tournoi(tournoi)
+                            if choix != "":
+                                None
+                            else:
+                                continue
+                        elif choix == "2":
+                            choix = self.view.afficher_informations_joueurs(tournoi)
+                            if choix != "":
+                                None
+                            else:
+                                continue
+                        elif choix == "3":
+                            while True:
+                                os.system("cls")
+                                Esthetique.afficher_banniere()
+                                choix = self.view.sous_menu_tours(tournoi.nom)
+                                if choix == "1":
+                                    self.view.afficher_informations_tours(tournoi)
+                                    if choix != "":
+                                        None
+                                    else:
+                                        continue
+                                elif choix == "2":
+                                    while True:
+                                        Esthetique.afficher_banniere()
+                                        choix_action = self.view.afficher_tours_disponibles(tournoi)
+                                        if choix_action == "1":
+                                            resultat_action = self.generer_match_tour(tournoi)
+                                            if resultat_action == "retour_menu":
+                                                break
+                                elif choix == "9":
+                                    break
+                        elif choix == "4":
+                            print("Affiche le classement du tournoi")
+                        elif choix == "9":
+                            os.system("cls")
+                            break
+            elif choix == "9":
                 print("Au revoir !")
                 break
             else:
@@ -211,3 +250,22 @@ class Controller:
 
     def chemin_fichier_tournoi(self, nom_fichier):
         return os.path.join("data_tournois", nom_fichier)
+
+    def generer_match_tour(cls, tournoi) -> str:
+        choix_tour = cls.view.afficher_tours_disponibles(tournoi)
+        tour_selectionne = tournoi.liste_tours[choix_tour - 1]
+
+        if tour_selectionne.matchs:
+            choix_action = cls.view.afficher_matchs_existants(tour_selectionne)
+
+            if choix_action == "1":
+                cls.view.afficher_matchs_tour(tour_selectionne)
+            elif choix_action == "2":
+                return "retour_menu"
+            else:
+                print("Choix invalide. Veuillez réessayer.")
+        else:
+            tour_selectionne.generer_match()
+            print(f"Les matchs ont été générés pour le tour '{tour_selectionne.nom}'.")
+
+        return "continuer"
