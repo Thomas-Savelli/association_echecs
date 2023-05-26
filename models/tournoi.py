@@ -1,7 +1,7 @@
 import random
 
 from models.match import Match
-from models.joueur import Joueur
+from models.tour import Tour
 
 
 class Tournoi:
@@ -15,7 +15,7 @@ class Tournoi:
         self.nombre_tours = int(nombre_tours)
         self.liste_tours = []
         self.liste_joueurs = []
-        self.liste_matchs = []
+        # self.liste_matchs = []
         self.description = description
 
     def ajouter_joueur(self, joueur):
@@ -42,73 +42,57 @@ class Tournoi:
                 \nNombre de tours : {self.nombre_tours}\
                 \nDescription : {self.description}\n"
 
-    def generer_match(self):
-        for tour in self.liste_tours:
-            """generer un tour avec une liste de matchs et l'ajouter à la liste des tours"""
-            # Cette méthode permet de générer les matchs du tour initialisé
-            # Vérifie su les matchs ont déjà été générés
-            if self.liste_matchs:
-                return self.liste_matchs
+    def generer_match(self, tour_selectionne):
+        """
+        Cette méthode génère les matchs pour un tour spécifique.
+        Chaque joueur doit jouer une fois par tour, donc nous avons besoin de
+        diviser la liste des joueurs en paires. Pour les tours suivant le premier,
+        les matchs doivent être générés en fonction des scores des joueurs.
+        """
+        # Assurez-vous que la liste des joueurs est paire
+        if len(self.liste_joueurs) % 2 != 0:
+            print("Le nombre de joueurs doit être pair pour générer des matchs.")
+            return
 
-            # Mélange des joueurs de façon aléatoire pour le premier tour
-            if self.nom == "Tour 1" or self.nom == "tour 1":
-                random.shuffle(self.liste_joueurs)
+        # Générer les matchs pour le tour
+        matchs = []
 
-            # Tri des joueurs par nombre de points dans le tournoi
-            self.liste_joueurs.sort(key=lambda x: x.score, reverse=True)
+        if tour_selectionne == 0:
+            # Pour le premier tour, simplement mélanger les joueurs et les diviser en paires
+            joueurs = self.liste_joueurs[:]
+            random.shuffle(joueurs)
 
-            # Génére les matchs en associant les joueurs sans matchs identiques
-            # Ensemble pour stocker les paires de joueurs déjà jouées
-            jouee = set()
-
-            for i in range(0, len(self.liste_joueurs), 2):
-                # Sur l'intégralité des joueurs, selection de deux à la fois
-                """ Pour for qui va de 0 à la longueur de la liste self.joueurs en
-                incrémentant de 2 à chaque fois (pour prendre deux joueurs à la
-                fois). À chaque itération, on prend les deux joueurs joueur1
-                et joueur2 à partir de leur index i et i+1 dans la liste
-                self.joueurs."""
-                joueur1 = self.liste_joueurs[i]
-                joueur2 = self.liste_joueurs[i+1]
-
-                while (joueur1, joueur2) in jouee or (joueur2, joueur1) in jouee:
-                    """Dans la boucle while, on vérifie si la paire de joueurs
-                    (joueur1, joueur2) ou (joueur2, joueur1) a déjà été jouée
-                    (jouee). Si c'est le cas, on passe à la paire suivante
-                    (i est incrémenté de 2) jusqu'à ce qu'on trouve une paire
-                    de joueurs qui n'a pas encore été jouée."""
-                    i += 2
-                    joueur1 = self.liste_joueurs[i]
-                    joueur2 = self.liste_joueurs[i+1]
-
-                """Une fois que la paire de joueurs est trouvée,
-                on l'ajoute à jouee pour éviter de la réutiliser
-                et on crée un objet Match avec les joueurs
-                joueur1 et joueur2. Enfin, on ajoute cet objet Match
-                à la liste self.matches qui contiendra
-                tous les matchs du tour."""
-                jouee.add((joueur1, joueur2))
+            while joueurs:
+                joueur1 = joueurs.pop(0)
+                joueur2 = joueurs.pop(0)
                 match = Match(joueur1, joueur2)
-                self.liste_matchs.append(match)
+                matchs.append(match)
+        else:
+            # Pour les tours suivants, les matchs doivent être générés en fonction des scores des joueurs
+            joueurs = sorted(self.liste_joueurs, key=lambda x: x.score, reverse=True)
+            while joueurs:
+                joueur1 = joueurs.pop(0)
+                joueur2 = None
+                for joueur in joueurs:
+                    # Vérifier si ces deux joueurs ont déjà joué ensemble
+                    if not any((m.joueur1 == joueur1 and m.joueur2 == joueur or m.joueur2 == joueur1 and m.joueur1 == joueur) for m in tour_selectionne.liste_matchs):
+                        joueur2 = joueur
+                        break
+                if not joueur2:
+                    print(f"Impossible de trouver un adversaire pour le joueur {joueur1.nom} qui n'est pas déjà joué avec.")
+                    return
+                joueurs.remove(joueur2)
+                match = Match(joueur1, joueur2)
+                matchs.append(match)
 
-        # Retourne la liste des matchs
-        return self.liste_matchs
+        # Retourner la liste des matchs pour le tour spécifique
+        return matchs
 
-    def to_dict(self):
-        """permet de convertir les données en dictionnaire
-        car JSON ne peut pas représenter directement les objets
-        personnalisés"""
-        return {
-            "nom": self.nom,
-            "lieu": self.lieu,
-            "date_debut": self.date_debut,
-            "date_fin": self.date_fin,
-            "nombre_tour": self.nombre_tours,
-            "liste_tours": [tour.to_dict() for tour in self.liste_tours],
-            "liste_joueurs": [joueur.to_dict() for joueur in self.liste_joueurs],
-            "liste_matchs": [match.to_dict() for match in self.liste_matchs],
-            "description":  self.description
-        }
 
-    if __name__ == '__main__':
-        pass
+if __name__ == '__main__':
+    tournoi1 = Tournoi("tournoi echec", "ile rousse", "11/11/2023", "12/11/2023", "4", "zzzzzzzzzzzzzzzzzz")
+    print(tournoi1)
+    Tournoi.generer_match(tournoi1)
+    tour1 = Tour("tour1", "11/11/2023", "11/11/2023")
+    tour2 = Tour("tou21", "12/11/2023", "12/11/2023")
+    print(tournoi1.liste_tours)

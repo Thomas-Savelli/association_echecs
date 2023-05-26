@@ -47,35 +47,26 @@ class View:
         return input()
 
     @classmethod
-    def afficher_tours_disponibles(cls, tournoi) -> str:
-        print("*" * 40)
-        print("       GESTION DES TOURS DU TOURNOI    ")
-        print("*" * 40)
-        print(f"Tournoi en cours : \033[1;32m{tournoi}\033[0m")
-        print("-" * 40)
-        print("Veuillez selectionner le tour où vous souhaitez générer des matchs :")
+    def afficher_tours_disponibles(cls, tournoi):
+        print("\nTournoi en cours :", tournoi.nom)
+        print("----------------------------------------")
+        if not tournoi.liste_tours:
+            print("Aucun tour n'a été créé pour ce tournoi.")
+            return None
 
-        # Afficher les options de sélection des tours disponibles
         for i, tour in enumerate(tournoi.liste_tours, start=1):
-            print(f"{i+1}. {tour.nom}")
+            if not tour.liste_matchs:
+                statut_matchs = "Matchs non générés"
+            else:
+                statut_matchs = "Matchs générés"
+            print(f"{i}. {tour.nom} ({statut_matchs})")
 
-        choix = input("Saisissez le numéro du tour : ")
-        return int(choix)
-
-    @classmethod
-    def afficher_matchs_existants(cls, tour):
-        print(f"Les matchs ont déjà été générés pour le tour '{tour.nom}'. Que souhaitez-vous faire ?")
-        print("1. Afficher les matchs existants")
-        print("2. Revenir au menu principal")
-
-        choix_action = input("Saisissez votre choix : ")
-        return choix_action
-
-    @classmethod
-    def afficher_matchs_tour(cls, tour):
-        print(f"Matchs du tour '{tour.nom}':")
-        for match in tour.matchs:
-            print(match)
+        while True:
+            choix = input("Saisissez le numéro du tour : ")
+            if choix.isdigit() and 1 <= int(choix) <= len(tournoi.liste_tours):
+                return int(choix)
+            else:
+                print("Choix invalide. Veuillez saisir un numéro valide.")
 
     @classmethod
     def nouveau_tournoi(cls) -> tuple:
@@ -118,20 +109,11 @@ class View:
         print("")
         print("\033[1;32mInformations sur les tours du tournoi : \033[0m")
         print("")
+        print(len(tournoi.liste_tours))
+        print("***************************************")
         for tour in tournoi.liste_tours:
             print(f"{tour.nom} - {tour.date_debut} : {tour.date_fin}")
             print("")
-            # print(f"Matchs du {tour.nom} : ")
-            # print("")
-            # for match in tournoi.liste_matchs:
-            #     if match.score1 is None or match.score2 is None:
-            #         print(f"{match.joueur1.nom} {match.joueur1.prenom} VS {match.joueur2.nom}\
-            #               {match.joueur2.prenom} : Non joué")
-            #     else:
-            #         print(f"{match.joueur1.nom} {match.joueur1.prenom} VS\
-            # {match.joueur2.nom} {match.joueur2.prenom} :\
-            #               {match.score1} - {match.score2}")
-            #     print("")
             print("------------------------------")
         choix = input("\033[1;32mTape entrée pour retour en arriére\033[0m.")
         return choix
@@ -153,11 +135,12 @@ class View:
         print("\033[1;32mInformations sur les tours du tournoi : \033[0m")
         print("")
         for tour in tournoi.liste_tours:
+            print(tour)
             print(f"{tour.nom} - {tour.date_debut} : {tour.date_fin}")
             print("")
-            if tournoi.liste_matchs:
+            if tour.liste_matchs:
                 print("Matchs associés :")
-                for match in tournoi.liste_matchs:
+                for match in tour.liste_matchs:
                     print(f"- {match.joueur1.nom} vs {match.joueur2.nom}")
             else:
                 print("Aucun match n'a été enregistré pour ce tour")
@@ -197,3 +180,9 @@ class View:
         else:
             print("Choix invalide.")
             return None
+
+    @classmethod
+    def afficher_matchs(cls, matchs):
+        print("\nMatchs générés :")
+        for match in matchs:
+            print(f"- {match.joueur1.nom} vs {match.joueur2.nom}")

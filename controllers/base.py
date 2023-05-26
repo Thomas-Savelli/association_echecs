@@ -35,6 +35,7 @@ class Controller:
             elif choix == "2":
                 dossier_tournois = "data_tournois"
                 if not os.path.exists(dossier_tournois) or not os.listdir(dossier_tournois):
+                    os.system("cls")
                     print("Le dossier de sauvegarde des tournois n'existe pas ou est vide.")
                     continue  # Retourne au début de la boucle while
 
@@ -62,7 +63,7 @@ class Controller:
                                 continue
                         elif choix == "3":
                             while True:
-                                os.system("cls")
+                                # os.system("cls")
                                 Esthetique.afficher_banniere()
                                 choix = self.view.sous_menu_tours(tournoi.nom)
                                 if choix == "1":
@@ -72,13 +73,17 @@ class Controller:
                                     else:
                                         continue
                                 elif choix == "2":
-                                    while True:
-                                        Esthetique.afficher_banniere()
-                                        choix_action = self.view.afficher_tours_disponibles(tournoi)
-                                        if choix_action == "1":
-                                            resultat_action = self.generer_match_tour(tournoi)
-                                            if resultat_action == "retour_menu":
-                                                break
+                                    tour_index = self.view.afficher_tours_disponibles(tournoi)
+                                    if tour_index is not None:
+                                        tour_selectionne = tournoi.liste_tours[tour_index - 1]
+                                        self.creation_matchs(tournoi, tour_selectionne)
+                                        continue
+                                    # while True:
+                                    #     Esthetique.afficher_banniere()
+                                    #     choix_action = self.view.afficher_tours_disponibles(tournoi)
+                                    #     if choix_action == "1":
+                                    #         self.generer_matchs(tournoi.liste_tours)
+                                    #         break  # Retourne au sous-menu des tours
                                 elif choix == "9":
                                     break
                         elif choix == "4":
@@ -86,6 +91,8 @@ class Controller:
                         elif choix == "9":
                             os.system("cls")
                             break
+                        else:
+                            None
             elif choix == "9":
                 print("Au revoir !")
                 break
@@ -135,7 +142,7 @@ class Controller:
 
     def creer_tour(self):
         """creer les tours du tournoi"""
-        if self.tournoi.liste_joueurs is None:
+        if not self.tournoi.liste_joueurs:
             print("Aucun joueur n'a été créé ...")
 
         nombre_tours = self.tournoi.nombre_tours
@@ -153,17 +160,18 @@ class Controller:
                     print("")
                     print("Erreur de Saisie :")
                     print("Veuillez entrer toutes les informations.")
-            tour_index = Tour(*infos_tour)
-            self.tournoi.liste_tours.append(tour_index)
-
-    def creer_matchs(self):
-        self.tournoi.generer_match()
+            nouveau_tour = Tour(*infos_tour)
+            self.tournoi.liste_tours.append(nouveau_tour)
 
     def sauvegarder_tournoi(self, tournoi, nom_fichier):
         # Converti les objects en dictionnaires
         joueurs_data = [joueur.to_dict() for joueur in tournoi.liste_joueurs]
         tours_data = [tour.to_dict() for tour in tournoi.liste_tours]
-        matchs_data = [match.to_dict() for match in tournoi.liste_matchs]
+
+        # Récupérer les matchs à partir de chaque tour
+        matchs_data = []
+        for tour in tournoi.liste_tours:
+            matchs_data.extend([match.to_dict() for match in tour.liste_matchs])
 
         # Crée le dictionnaire des données du tournoi
         tournoi_data = {
@@ -199,6 +207,7 @@ class Controller:
 
         with open(chemin_fichier, "r") as fichier:
             tournoi_data = json.load(fichier)
+
         # Charger les attributs du tournoi à partir du fichier JSON
             nom = tournoi_data.get("nom")
             lieu = tournoi_data.get("lieu")
@@ -216,29 +225,28 @@ class Controller:
             joueurs.append(joueur)
 
         # Création des objets Tour à partir des données fichier
-        tours = []
         tours_data = tournoi_data.get("tours", [])
         for tour_data in tours_data:
             tour = Tour(**tour_data)
-            tours.append(tour)
 
-        # Création des objets Match à partir des données fichier
-        matchs = []
-        matchs_data = tournoi_data.get("matchs", [])
-        for match_data in matchs_data:
-            joueur1_data = match_data.get("joueur1", {})
-            joueur1 = Joueur(**joueur1_data)
-            joueur2_data = match_data.get("joueur2", {})
-            joueur2 = Joueur(**joueur2_data)
-            score1 = match_data.get("score1", 0)
-            score2 = match_data.get("score2", 0)
-            match = Match(joueur1, joueur2, score1, score2)
-            matchs.append(match)
+        # Charger les matchs à partir des données du tour
+            tour.liste_matchs = []
+            matchs_data = tour_data.get("matchs", [])
+            for match_data in matchs_data:
+                joueur1_data = match_data.get("joueur1", {})
+                joueur1 = Joueur(**joueur1_data)
+                joueur2_data = match_data.get("joueur2", {})
+                joueur2 = Joueur(**joueur2_data)
+                score1 = match_data.get("score1", 0)
+                score2 = match_data.get("score2", 0)
+                match = Match(joueur1, joueur2, score1, score2)
+                tour.liste_matchs.append(match)
+
+            # Ajouter le tour à la liste des tours du tournoi
+            tournoi.liste_tours.append(tour)
 
         # Création d'un objet Tournoi à partir des données chargées
         tournoi.liste_joueurs = joueurs
-        tournoi.liste_tours = tours
-        tournoi.liste_matchs = matchs
 
         return tournoi
 
@@ -252,21 +260,17 @@ class Controller:
     def chemin_fichier_tournoi(self, nom_fichier):
         return os.path.join("data_tournois", nom_fichier)
 
-    def generer_match_tour(cls, tournoi) -> str:
-        choix_tour = cls.view.afficher_tours_disponibles(tournoi)
-        tour_selectionne = tournoi.liste_tours[choix_tour - 1]
+    def creation_matchs(self, tournoi, tour):
+        while True:
+            tour_index = self.view.afficher_tours_disponibles(tournoi)
+            if tour_index is None:
+                return
 
-        if tour_selectionne.matchs:
-            choix_action = cls.view.afficher_matchs_existants(tour_selectionne)
-
-            if choix_action == "1":
-                cls.view.afficher_matchs_tour(tour_selectionne)
-            elif choix_action == "2":
-                return "retour_menu"
+            tour_selectionne = tournoi.liste_tours[tour_index - 1]
+            if tour_selectionne.liste_matchs:
+                print("Les matchs ont déjà été générés pour ce tour.")
             else:
-                print("Choix invalide. Veuillez réessayer.")
-        else:
-            tour_selectionne.generer_match()
-            print(f"Les matchs ont été générés pour le tour '{tour_selectionne.nom}'.")
-
-        return "continuer"
+                matchs = tournoi.generer_match(tour_selectionne)
+                tour_selectionne.liste_matchs.extend(matchs)
+                self.view.afficher_matchs(matchs)
+                break
