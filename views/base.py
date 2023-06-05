@@ -42,12 +42,16 @@ class View:
         print("-" * 40)
         print("\033[1;32m1\033[0m. Afficher les tours du tournoi")
         print("\033[1;32m2\033[0m. Générer des matchs pour un tour")
+        print("\033[1;32m3\033[0m. Renseigner les résultats des Matchs")
         print("\033[1;32m9\033[0m. Quitter le menu de gestion des tours")
         print("*" * 40)
         return input()
 
     @classmethod
     def afficher_tours_disponibles(cls, tournoi):
+        print("")
+        print("\033[1;32mTours disponibles où vous pouvez générer des matchs :\033[0m")
+        print("----------------------------------------")
         print("\nTournoi en cours :", tournoi.nom)
         print("----------------------------------------")
         if not tournoi.liste_tours:
@@ -56,9 +60,9 @@ class View:
 
         for i, tour in enumerate(tournoi.liste_tours, start=1):
             if not tour.liste_matchs:
-                statut_matchs = "Matchs non générés"
+                statut_matchs = "\033[3;31mMatchs non générés\033[0m"
             else:
-                statut_matchs = "Matchs générés"
+                statut_matchs = "\033[1;32mMatchs générés\033[0m"
             print(f"{i}. {tour.nom} ({statut_matchs})")
 
         while True:
@@ -70,23 +74,26 @@ class View:
 
     @classmethod
     def nouveau_tournoi(cls) -> tuple:
-        print("Initialisation d'un nouveau tournoi -->")
+        print("")
+        print("\033[1;32mInitialisation d'un nouveau tournoi -->\033[0m")
         nom = input("Nom du tournoi : ")
         lieu = input("Lieu du tournoi : ")
         date_debut = input("Date de début du tournoi : ")
         date_fin = input("Date de fin du tournoi : ")
         nombre_tours = input("Nombre de tours prévu : ")
-        description = input("Description dutournoi : ")
+        description = input("Description du tournoi : ")
         return nom, lieu, date_debut, date_fin, nombre_tours, description
 
     @classmethod
     def choix_2(cls) -> str:
+        print("")
         print("Voulez vous créer un autre paire de joueurs ? : (o / n)")
         return input()
 
     @classmethod
     def nouveau_joueur(cls) -> str:
-        print("Veuillez créer une paire de joueurs -->")
+        print("")
+        print("Création d'un joueur :")
         id = input("Id du joueur : ")
         nom = input("Nom du Joueur : ")
         prenom = input("Prenom du joueur : ")
@@ -109,12 +116,12 @@ class View:
         print("")
         print("\033[1;32mInformations sur les tours du tournoi : \033[0m")
         print("")
-        print(len(tournoi.liste_tours))
-        print("***************************************")
-        for tour in tournoi.liste_tours:
+        for i, tour in enumerate(tournoi.liste_tours):
             print(f"{tour.nom} - {tour.date_debut} : {tour.date_fin}")
             print("")
-            print("------------------------------")
+            if i < len(tournoi.liste_tours) - 1:
+                print("------------------------------")
+
         choix = input("\033[1;32mTape entrée pour retour en arriére\033[0m.")
         return choix
 
@@ -135,15 +142,19 @@ class View:
         print("\033[1;32mInformations sur les tours du tournoi : \033[0m")
         print("")
         for tour in tournoi.liste_tours:
-            print(tour)
             print(f"{tour.nom} - {tour.date_debut} : {tour.date_fin}")
             print("")
             if tour.liste_matchs:
                 print("Matchs associés :")
+                print("")
                 for match in tour.liste_matchs:
-                    print(f"- {match.joueur1.nom} vs {match.joueur2.nom}")
+                    print(f"-{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
+                    print("")
+                print("-------------------------------")
             else:
-                print("Aucun match n'a été enregistré pour ce tour")
+                print("\033[3;31mAucun match n'a été enregistré pour ce tour\033[0m")
+                print("")
+                print("-------------------------------")
                 print("")
         choix = input("\033[1;32mTape entrée pour retour en arriére\033[0m.")
         return choix
@@ -184,5 +195,32 @@ class View:
     @classmethod
     def afficher_matchs(cls, matchs):
         print("\nMatchs générés :")
+        print("")
         for match in matchs:
-            print(f"- {match.joueur1.nom} vs {match.joueur2.nom}")
+            print(f"- {match.joueur1.nom} {match.joueur2.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
+            print("")
+
+    @classmethod
+    def demande_resultat_match(cls, nom_joueur, prenom_joueur):
+        while True:
+            score = input(f"Entrez le résultat pour le joueur {nom_joueur} {prenom_joueur} (g/p/n): ")
+            if score.lower() in ["g", "p", "n"]:
+                return score.lower()
+            else:
+                print("Veuillez entrer un résultat valide (g, p ou n).")
+
+    @classmethod
+    def afficher_classement_tournoi(cls, tournoi):
+        print(f"Classement du tournoi : {tournoi.nom}")
+        print("-----------------------")
+        classement = tournoi.classement()
+
+        if classement:
+            for i, joueur in enumerate(classement, start=1):
+                print(f"{i}. {joueur.nom} {joueur.prenom} ({joueur.score})")
+        else:
+            print("Aucun joueur dans le tournoi.")
+
+        print("-----------------------\n")
+        choix = input("\033[1;32mTape entrée pour retour en arriére\033[0m.")
+        return choix
