@@ -219,7 +219,7 @@ class View:
             for i, joueur in enumerate(classement, start=1):
                 print(f"{i}. {joueur.nom} {joueur.prenom} ({joueur.score})")
         else:
-            print("Aucun joueur dans le tournoi.")
+            None
 
         print("-----------------------\n")
         choix = input("\033[1;32mTape entrée pour retour en arriére\033[0m.")

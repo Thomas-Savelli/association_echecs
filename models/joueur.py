@@ -38,8 +38,3 @@ class Joueur:
             self.perd()
         else:
             self.egalise()
-
-
-if __name__ == '__main__':
-    joueur = Joueur("qlizdj", "jean", "toto", "10/12/3434")
-    print(joueur)

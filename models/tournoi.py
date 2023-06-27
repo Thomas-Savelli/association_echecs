@@ -1,7 +1,6 @@
 import random
 
 from models.match import Match
-from models.tour import Tour
 
 
 class Tournoi:
@@ -89,12 +88,3 @@ class Tournoi:
 
         # Retourner la liste des matchs pour le tour spécifique
         return matchs
-
-
-if __name__ == '__main__':
-    tournoi1 = Tournoi("tournoi echec", "ile rousse", "11/11/2023", "12/11/2023", "4", "zzzzzzzzzzzzzzzzzz")
-    print(tournoi1)
-    Tournoi.generer_match(tournoi1)
-    tour1 = Tour("tour1", "11/11/2023", "11/11/2023")
-    tour2 = Tour("tou21", "12/11/2023", "12/11/2023")
-    print(tournoi1.liste_tours)

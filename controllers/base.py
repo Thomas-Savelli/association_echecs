@@ -180,58 +180,6 @@ class Controller:
             self.tournoi.liste_tours.append(nouveau_tour)
 
     def sauvegarder_tournoi(self, tournoi, nom_fichier):
-        # # Convertir les objets en dictionnaires
-        # joueurs_data = []
-        # for joueur in tournoi.liste_joueurs:
-        #     joueur_data = joueur.to_dict()
-        #     joueurs_data.append(joueur_data)
-
-        # tours_data = [tour.to_dict() for tour in tournoi.liste_tours]
-
-        # # Récupérer les matchs à partir de chaque tour
-        # matchs_data = []
-        # for tour in tournoi.liste_tours:
-        #     matchs_data.extend([match.to_dict() for match in tour.liste_matchs])
-
-        # # Mettre à jour les scores des joueurs dans le dictionnaire des matchs
-        # for match in matchs_data:
-        #     joueur1_id = match["joueur1"]["id"]
-        #     joueur2_id = match["joueur2"]["id"]
-        #     score1 = match["joueur1"]["score"]
-        #     score2 = match["joueur2"]["score"]
-
-        #     for joueur_data in joueurs_data:
-        #         if joueur_data["id"] == joueur1_id:
-        #             joueur_data["score"] = score1
-        #         elif joueur_data["id"] == joueur2_id:
-        #             joueur_data["score"] = score2
-
-        # # Créer le dictionnaire des données du tournoi
-        # tournoi_data = {
-        #     "nom": tournoi.nom,
-        #     "lieu": tournoi.lieu,
-        #     "date_debut": tournoi.date_debut,
-        #     "date_fin": tournoi.date_fin,
-        #     "nombre_tours": tournoi.nombre_tours,
-        #     "description": tournoi.description,
-        #     "joueurs": joueurs_data,
-        #     "tours": tours_data,
-        #     "matchs": matchs_data,
-        # }
-
-        # # Créer le dossier pour les tournois s'il n'existe pas
-        # dossier_tournoi = "data_tournois"
-        # if not os.path.exists(dossier_tournoi):
-        #     os.mkdir(dossier_tournoi)
-
-        # # Créer le chemin complet du fichier
-        # chemin_fichier = os.path.join(dossier_tournoi, nom_fichier)
-
-        # # Écrire les données du tournoi dans le fichier JSON
-        # with open(chemin_fichier, "w") as fichier:
-        #     json.dump(tournoi_data, fichier, indent=4)
-
-        # Convertir les objets en dictionnaires
         joueurs_data = []
         for joueur in tournoi.liste_joueurs:
             joueur_data = joueur.to_dict()
