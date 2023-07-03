@@ -234,9 +234,10 @@ class Controller:
             lieu = tournoi_data.get("lieu")
             date_debut = tournoi_data.get("date_debut")
             date_fin = tournoi_data.get("date_fin")
+            description = tournoi_data.get("description")
 
         # Créer un objet Tournoi avec les attributs chargés
-        tournoi = Tournoi(nom=nom, lieu=lieu, date_debut=date_debut, date_fin=date_fin)
+        tournoi = Tournoi(nom=nom, lieu=lieu, date_debut=date_debut, date_fin=date_fin, description=description)
 
         # Création des objets Joueur à partir des données fichier
         joueurs = []
