@@ -74,6 +74,22 @@ Une fois le repository téléchargé et stocké localement :
 ## <span style="color: #8BC34A">**Les données enregistrées au format JSON**</span>
 Dans l'optique où la création des fichiers JSON sont tous enregistrés dans le dossier data_tournois, il est nécéssaire de ne pas deplacer les fichiers de tournois non terminés sous peine de perdre l'accés total à vos données. Toutefois, si ceux ci sont terminés et que vous désirez les archiver, vous pouvez deplacer vos fichiers dans un autre dossier que data_tournois créé au préalable par vous même à l'endroit de votre choix. En effet, un tournoi terminé et archivé ne nécéssitant pas de réutilisation ne fera que surcharger votre dossier data_tournois. De plus, le format JSON permet une lecture et une compréhension facile pour l'homme et ne nécéssite par conséquent aucuns programmes pour être lisible.
 
+## <span style="color: #8BC34A">**Générer un rapport avec Flake8-HTML**</span>
+
+Afin de générer un rapport avec Flake8-html, vous pouvez rentrer et valider cette ligne de code dans votre Terminal en vous assurant d'être dans le dossier source du programme :
+
+``flake8 --exclude=env\Lib\site-packages --max-line-length=119 --format=html --htmldir=reports/flake8-html``
+
+Ici :
+- flake8 : est l'outil que nous appellons
+- --exclude=env\Lib\site-packages : stipule que nous ne voulons pas prendre en compte les scripts de notre environnement virtuel (les packages téléchargés)
+- --max-line-length=119 : stipule que nous désirons mettre la longueur des lignes de codes à 119 charactéres maximum.
+- --format=html : stipule le format du rapport que nous désirons.
+- --htmldir=reports/flake8-html : indique le dossier où nous voulons enregistrer notre rapport avec Flake8.
+
+Vous n'avez plus qu'à regarder votre nouveau rapport dans le : 
+``reports/flake8-html`` !
+
 -------------------------------------------------------
 
 ## <span style="color: #8BC34A">**Fabriqué avec**</span>
